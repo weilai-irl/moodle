@@ -73,7 +73,6 @@ class lineitems extends resource_base {
         } else {
             $contenttype = $response->get_content_type();
         }
-        $container = empty($contenttype) || ($contenttype === $this->formats[0]);
         // We will receive typeid when working with LTI 1.x, if not then we are in LTI 2.
         $typeid = optional_param('type_id', null, PARAM_INT);
 
@@ -87,7 +86,7 @@ class lineitems extends resource_base {
                 throw new \Exception(null, 401);
             }
             $typeid = $this->get_service()->get_type()->id;
-            if (empty($contextid) || !($container ^ ($response->get_request_method() === self::HTTP_POST)) ||
+            if (empty($contextid) || ($response->get_request_method() === self::HTTP_POST && $contenttype !== $this->formats[1]) ||
                     (!empty($contenttype) && !in_array($contenttype, $this->formats))) {
                 throw new \Exception('No context or unsupported content type', 400);
             }
